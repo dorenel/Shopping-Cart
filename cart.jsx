@@ -90,9 +90,9 @@ const Products = (props) => {
   } = ReactBootstrap;
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
-  const [query, setQuery] = useState("http://localhost:1337/products");
+  const [query, setQuery] = useState("http://localhost:1337/api/products");
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
-    "http://localhost:1337/products",
+    "http://localhost:1337/api/products",
     {
       data: [],
     }
@@ -115,12 +115,11 @@ const Products = (props) => {
   let list = items.map((item, index) => {
     //let n = index + 1049;
     //let url = "https://picsum.photos/id/" + n + "/50/50";
-
     return (
       <li key={index}>
         <Image src={photos[index % 4]} width={70} roundedCircle></Image>
         <Button variant="primary" size="large">
-          {item.name}:{item.cost}
+          {item.name}:{item.cost}:{item.instock}
         </Button>
         <input name={item.name} type="submit" onClick={addToCart}></input>
       </li>
@@ -162,11 +161,18 @@ const Products = (props) => {
     let costs = cart.map((item) => item.cost);
     const reducer = (accum, current) => accum + current;
     let newTotal = costs.reduce(reducer, 0);
-    console.log(`total updated to ${newTotal}`);
+    //console.log(`total updated to ${newTotal}`);
     return newTotal;
   };
   // TODO: implement the restockProducts function
-  const restockProducts = (url) => {};
+  const restockProducts = (url) => {
+    // fetch data.
+    doFetch(url);
+    // construct new array to contain only the "attributes" object of each item.
+    let newItems = data.data.map((item) => item.attributes);
+    // set items to the new array containing all the fruits info.
+    setItems([...items, ...newItems]);
+  };
 
   return (
     <Container>
@@ -188,7 +194,9 @@ const Products = (props) => {
       <Row>
         <form
           onSubmit={(event) => {
-            restockProducts(`http://localhost:1337/${query}`);
+            //restockProducts(`http://localhost:1337/${query}`);
+            // the input default already has "localhost:1337" in it.
+            restockProducts(query);
             console.log(`Restock called on ${query}`);
             event.preventDefault();
           }}
