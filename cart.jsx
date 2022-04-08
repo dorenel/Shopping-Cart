@@ -113,13 +113,13 @@ const Products = (props) => {
   const photos = ["apple.png", "orange.png", "beans.png", "cabbage.png"];
 
   let list = items.map((item, index) => {
-    //let n = index + 1049;
-    //let url = "https://picsum.photos/id/" + n + "/50/50";
+    let n = index + 1049;
+    let url = "https://picsum.photos/id/" + n + "/50/50";
     return (
       <li key={index}>
-        <Image src={photos[index % 4]} width={70} roundedCircle></Image>
+        <Image src={url} width={70} roundedCircle></Image>
         <Button variant="primary" size="large">
-          {item.name}:{item.cost}:{item.instock}
+          {item.name}:{item.cost}
         </Button>
         <input name={item.name} type="submit" onClick={addToCart}></input>
       </li>
